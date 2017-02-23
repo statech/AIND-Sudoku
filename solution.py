@@ -89,6 +89,11 @@ def display(values):
     print
 
 def eliminate(values):
+    """
+    Go through all the boxes, and whenever there is a box with a value, eliminate this value from the values of all its peers.
+    Input: A sudoku in dictionary form.
+    Output: The resulting sudoku in dictionary form.
+    """
     solved_boxes = [box for box, value in values.items() if len(value) == 1]
     for box in solved_boxes:
         for peer in peers[box]:
@@ -97,6 +102,11 @@ def eliminate(values):
     return values
 
 def only_choice(values):
+    """
+    Go through all the units, and whenever there is a unit with a value that only fits in one box, assign the value to this box.
+    Input: A sudoku in dictionary form.
+    Output: The resulting sudoku in dictionary form.
+    """
     unsolved_boxes = [box for box, value in values.items() if len(value) > 1]
     for unit in unitlist:
         unsolved_inunit = set(unit).intersection(set(unsolved_boxes))
@@ -111,6 +121,13 @@ def only_choice(values):
     return values
 
 def reduce_puzzle(values):
+    """
+    Iterate eliminate(), only_choice() and naked_twins(). If at some point, there is a box with no available values, return False.
+    If the sudoku is solved, return the sudoku.
+    If after an iteration of all functions, the sudoku remains the same, return the sudoku.
+    Input: A sudoku in dictionary form.
+    Output: The resulting sudoku in dictionary form.
+    """
     stalled = False
     while not stalled:
         values_before = values.copy()
@@ -123,6 +140,8 @@ def reduce_puzzle(values):
     return values
 
 def search(values):
+    "Using depth-first search and propagation, create a search tree and solve the sudoku."
+    # First, reduce the puzzle using the previous function
     values = reduce_puzzle(values)
     if values is False:
         return False
